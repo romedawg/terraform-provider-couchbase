@@ -27,6 +27,7 @@ const (
 	keyBucketCompressionMode        = "compression_mode"
 	keyBucketConflictResolutionType = "conflict_resolution_type"
 	keyBucketDurabilityLevel        = "durability_level"
+	keyBucketStorageBackend         = "storage_backend"
 
 	// Security group resource contants
 	keySecurityGroupName           = "name"
@@ -57,9 +58,22 @@ const (
 	keyQueryIndexFields     = "fields"
 	keyQueryIndexCondition  = "condition"
 
+	// Scope resource constants
+	keyScopeName       = "name"
+	keyScopeBucketName = "bucket"
+
+	// Collection resource constants
+	keyCollectionName       = "name"
+	keyCollectionScopeName  = "scope"
+	keyCollectionBucketName = "bucket"
+	keyCollectionMaxExpiry  = "max_expire"
+	keyCollectionHistory    = "history"
+
 	// Others
 	queryIndexTimeoutCreate    = 300
 	bucketTimeoutCreate        = 300
+	scopeTimeoutCreate         = 300
+	collectionTimeoutCreate    = 300
 	securityUserTimeoutCreate  = 300
 	securityGroupTimeoutCreate = 300
 )

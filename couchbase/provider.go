@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -94,6 +94,8 @@ func Provider() *schema.Provider {
 			"couchbase_security_user":       resourceSecurityUser(),
 			"couchbase_primary_query_index": resourcePrimaryQueryIndex(),
 			"couchbase_query_index":         resourceQueryIndex(),
+			"couchbase_bucket_scope":        resourceScope(),
+			"couchbase_bucket_collection":   resourceCollection(),
 		},
 
 		ConfigureContextFunc: providerConfigure,
@@ -136,7 +138,7 @@ func certificateManagement(filePath string) (*x509.CertPool, diag.Diagnostics) {
 	}
 	defer file.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		return nil, diag.FromErr(err)
 	}
@@ -149,7 +151,7 @@ func certificateManagement(filePath string) (*x509.CertPool, diag.Diagnostics) {
 	return &tlsRootCAs, nil
 }
 
-func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+func providerConfigure(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	var (
 		tlsRootCAs *x509.CertPool
 		diags      diag.Diagnostics

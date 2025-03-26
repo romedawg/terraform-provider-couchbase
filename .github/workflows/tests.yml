@@ -1,0 +1,46 @@
+---
+name: tests
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+
+permissions: {}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      CB_ADDRESS: couchbase
+      CB_CLIENT_PORT: 8091
+      CB_NODE_PORT: 11210
+      CB_PASSWORD: 123456
+      CB_USERNAME: Administrator
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Setup go
+        uses: actions/setup-go@v5.4.0
+        with:
+          go-version: "1.24.0"
+      - name: Couchbase Initialization
+        run: |
+          make cbinit
+      - name: Couchbase Unit Tests
+        run: |
+          make test
+      - name: Couchbase Acceptance Tests
+        run: |
+          make test
+          make testacc
+    services:
+      couchbase:
+        image: couchbase
+        ports:
+          - 8091-8094:8091-8094
+          - 11210:11210
+          - 18091-18096:18091-18096

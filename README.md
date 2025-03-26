@@ -1,21 +1,31 @@
 # Terraform provider for couchbase
-[![Build Status](https://drone.budisky.com/api/badges/lukasbudisky/terraform-provider-couchbase/status.svg)](https://drone.budisky.com/lukasbudisky/terraform-provider-couchbase)
+
+![GitHub release (with filter)](https://img.shields.io/github/v/release/lukasbudisky/terraform-provider-couchbase?style=flat-square&logo=terraform&logoColor=blue&label=latest%20version&labelColor=grey&link=https%3A%2F%2Fregistry.terraform.io%2Fproviders%2Flukasbudisky%2Fcouchbase%2Flatest&link=https%3A%2F%2Fregistry.terraform.io%2Fproviders%2Flukasbudisky%2Fcouchbase%2Flatest)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/lukasbudisky/terraform-provider-couchbase/.github%2Fworkflows%2Fmain_branch.yml?style=flat-square&logo=github&logoColor=white&label=tests&labelColor=grey&link=https%3A%2F%2Fgithub.com%2Flukasbudisky%2Fterraform-provider-couchbase%2Freleases&link=https%3A%2F%2Fgithub.com%2Flukasbudisky%2Fterraform-provider-couchbase%2Freleases)
+![GitHub all releases](https://img.shields.io/github/downloads/lukasbudisky/terraform-provider-couchbase/total?style=flat-square&logo=terraform&logoColor=blue&labelColor=grey&color=yellow&link=https%3A%2F%2Fregistry.terraform.io%2Fproviders%2Flukasbudisky%2Fcouchbase%2Flatest&link=https%3A%2F%2Fregistry.terraform.io%2Fproviders%2Flukasbudisky%2Fcouchbase%2Flatest)
+![GitHub contributors](https://img.shields.io/github/contributors-anon/lukasbudisky/terraform-provider-couchbase?style=flat-square&logo=github&logoColor=white&labelColor=grey&color=yellow&link=https%3A%2F%2Fgithub.com%2Flukasbudisky%2Fterraform-provider-couchbase%2Fgraphs%2Fcontributors&link=https%3A%2F%2Fgithub.com%2Flukasbudisky%2Fterraform-provider-couchbase%2Fgraphs%2Fcontributors)
+![GitHub Repo stars](https://img.shields.io/github/stars/lukasbudisky/terraform-provider-couchbase?style=flat-square&logo=github&logoColor=white&labelColor=grey&color=yellow&link=https%3A%2F%2Fgithub.com%2Flukasbudisky%2Fterraform-provider-couchbase%2Fstargazers&link=https%3A%2F%2Fgithub.com%2Flukasbudisky%2Fterraform-provider-couchbase%2Fstargazers)
 
 Terraform provider for Couchbase allow manage resources in couchbase cluster
 
 ## Requirements
-- terraform 1.4.0
-- go 1.20 (for plugin build)
-- docker-compose v2.15.1
-- docker desktop 4.17.0
+
+- terraform 1.10.5
+- go 1.24.0 (for plugin build)
+- docker compose v2.32.4-desktop.1
+- docker desktop 4.38.0
 
 ## Run couchbase on localhost
+
 In terraform_example folder is docker-compose.yml with couchbase server.
 
 How to run couchbase on localhost. (Works on Ubuntu)
-```
+
+```bash
 # Add couchbase to your /etc/hosts file
+sudo su -
 echo "127.0.0.1 couchbase" >> /etc/hosts
+exit
 
 # Create couchbase network
 make cbnetup
@@ -26,8 +36,10 @@ make cbup
 # Couchbase initialization
 make cbinit
 ```
+
 How to destroy local infrastructure
-```
+
+```bash
 # Destroy couchbase
 make cbdown
 
@@ -39,22 +51,28 @@ make cbnetdown
 
 > **WARNING**
 >
-> If you create multiple query indexes at once you can get internal server failure error because you > > can't create next index until previous is created.
+> If you create multiple query index at once you can
+> get internal server failure error because you can't
+> create next index until previous is created.
+>
+> Suggested solution is to reduce parallelism.
 > Add -parallelism=1 parameter during terraform apply
 >
 > Example:
->```
->terraform apply -parallelism=1
->```
+>
+> ```bash
+> terraform apply -parallelism=1
+> ```
 
-#### Base provider configuration
-```
+### Base provider configuration
+
+```terraform
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 1.10.5"
   required_providers {
     couchbase = {
-      version = "~> 0.0.6"
-      source  = "budisky.com/couchbase/couchbase"
+      version = "~> 1.1.3"
+      source  = "lukasbudisky/couchbase"
     }
   }
 }
@@ -70,14 +88,15 @@ provider "couchbase" {
 }
 ```
 
-#### TLS provider configuration
-```
+### TLS provider configuration
+
+```terraform
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 1.10.5"
   required_providers {
     couchbase = {
-      version = "~> 0.0.6"
-      source  = "budisky.com/couchbase/couchbase"
+      version = "~> 1.1.3"
+      source  = "lukasbudisky/couchbase"
     }
   }
 }
@@ -96,28 +115,37 @@ provider "couchbase" {
 ```
 
 ## Resources
+
 We currently manage these operations via terraform resources
-- buckets: ```couchbase_bucket_manager```
-- groups: ```couchbase_security_group```
-- users: ```couchbase_security_user```
-- primary: query indexes ```couchbase_primary_query_index```
-- query indexes: ```couchbase_query_index```
+
+- buckets: `couchbase_bucket_manager`
+- groups: `couchbase_security_group`
+- users: `couchbase_security_user`
+- primary: query index `couchbase_primary_query_index`
+- query index: `couchbase_query_index`
 
 ## Developing provider
+
 Provider tests
-```
+
+```bash
 make test
 ```
+
 Acceptance tests
-```
+
+```bash
 make testacc
 ```
+
 Build provider
-```
+
+```bash
 make build
 ```
+
 Install provider
-```
+
+```bash
 make install
 ```
-

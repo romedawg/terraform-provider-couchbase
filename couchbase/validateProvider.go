@@ -3,7 +3,7 @@ package couchbase
 import (
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 
@@ -35,7 +35,7 @@ func getValidateAllowSaslMechanismDiagMessage(value string) *diag.Diagnostic {
 // - SCRAM-SHA256
 // - SCRAM-SHA512
 func validateAllowSaslMechanism() schema.SchemaValidateDiagFunc {
-	return func(i interface{}, c cty.Path) diag.Diagnostics {
+	return func(i interface{}, _ cty.Path) diag.Diagnostics {
 		var diags diag.Diagnostics
 
 		rawSaslMechanism, ok := i.(string)
@@ -49,7 +49,6 @@ func validateAllowSaslMechanism() schema.SchemaValidateDiagFunc {
 				gocb.ScramSha1SaslMechanism,
 				gocb.ScramSha256SaslMechanism,
 				gocb.ScramSha512SaslMechanism:
-				break
 			default:
 				diags = append(diags, *getValidateAllowSaslMechanismDiagMessage(value))
 			}
@@ -60,7 +59,7 @@ func validateAllowSaslMechanism() schema.SchemaValidateDiagFunc {
 
 // validateTLSRootCert function validate TLS root certificate
 func validateTLSRootCert() schema.SchemaValidateDiagFunc {
-	return func(i interface{}, c cty.Path) diag.Diagnostics {
+	return func(i interface{}, _ cty.Path) diag.Diagnostics {
 		var diags diag.Diagnostics
 
 		tlsRootCAs := *x509.NewCertPool()
@@ -77,7 +76,7 @@ func validateTLSRootCert() schema.SchemaValidateDiagFunc {
 			}
 			defer file.Close()
 
-			data, err := ioutil.ReadAll(file)
+			data, err := io.ReadAll(file)
 			if err != nil {
 				return diag.FromErr(err)
 			}

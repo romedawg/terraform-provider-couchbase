@@ -10,16 +10,17 @@ description: |-
 
 The `couchbase_bucket_manager` manage buckets in couchbase
 
-
 ## Argument reference
 
 The following arguments are supported
+
 ### Required
 
 - **name** (String) Bucket name
 - **ram_quota_mb** (Number) Ram quota for bucket
 
 ### Optional
+
 <ul>
   <li><b>id</b> (String) The ID of this resource</li>
   <li><b>bucket_type</b> (String) Bucket type</li>
@@ -53,6 +54,11 @@ The following arguments are supported
       <li>nruEviction</li>
       <li>noEviction</li>
     </ul>
+  <li><b>storage_backend</b> (String) Storage backend type</li>
+    <ul>
+      <li>couchstore</li>
+      <li>magma</li>
+    </ul>
   <li><b>flush_enabled</b> (Boolean) Bucket flush enable/disable</li>
   <li><b>max_expire</b> (Int) Max expiry in seconds</li>
   <li><b>num_replicas</b> (Int) Number of bucket replicas</li>
@@ -60,7 +66,9 @@ The following arguments are supported
 </ul>
 
 ## Attributes reference
+
 The following arguments are exported
+
 <ul>
   <li><b>id</b> (String) The ID of this resource</li>
   <li><b>bucket_name</b> (String) Bucket name</li>
@@ -77,7 +85,8 @@ The following arguments are exported
 </ul>
 
 ## Example usage
-```
+
+```terraform
 resource "couchbase_bucket_manager" "bucket_1" {
   name                     = "bucket_1"
   ram_quota_mb             = 512
@@ -91,11 +100,10 @@ resource "couchbase_bucket_manager" "bucket_1" {
 
 ## Import
 
-```
+```bash
 # Format:
 # terraform import couchbase_bucket_manager.resource_name bucket_name
 
 # Import command:
 terraform import couchbase_bucket_manager.bucket_1 bucket_1
 ```
-

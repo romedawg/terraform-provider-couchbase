@@ -13,6 +13,7 @@ The terraform couchbase provider `terraform-provider-couchbase` for management r
 ## Argument reference
 
 The following arguments are supported
+
 ### Required
 
 <ul>
@@ -39,9 +40,10 @@ The following arguments are supported
 </ul>
 
 **More information about client-to-node and node-to-node ports are in couchbase documentation**
-<a href=https://docs.couchbase.com/server/current/install/install-ports.html>Couchbase Ports Documentation</a>
+<https://docs.couchbase.com/server/current/install/install-ports.html>
 
 ### Optional
+
 <ul>
   <li><b>management_timeout</b> (String) Couchase management timeout. Read more about couchbase timeouts in documentation</li>
   <ul>
@@ -62,17 +64,19 @@ The following arguments are supported
 </ul>
 
 **More information about timeouts are in client settings couchbase documentation**
-<a href="https://docs.couchbase.com/ruby-sdk/current/ref/client-settings.html">Client Settings / Timeouts</a>
+<https://docs.couchbase.com/ruby-sdk/current/ref/client-settings.html>
 
 ## Example usage
-#### Minimal configuration
-```
+
+### Minimal configuration
+
+```terraform
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 1.10.5"
   required_providers {
     couchbase = {
-      version = "~> 0.0.6"
-      source  = "budisky.com/couchbase/couchbase"
+      version = "~> 1.1.3"
+      source  = "lukasbudisky/couchbase"
     }
   }
 }
@@ -87,14 +91,15 @@ provider "couchbase" {
 }
 ```
 
-#### TLS Configuration
-```
+### TLS Configuration
+
+```terraform
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 1.10.5"
   required_providers {
     couchbase = {
-      version = "~> 0.0.6"
-      source  = "budisky.com/couchbase/couchbase"
+      version = "~> 1.1.3"
+      source  = "lukasbudisky/couchbase"
     }
   }
 }
@@ -112,14 +117,15 @@ provider "couchbase" {
 }
 ```
 
-#### Example create new bucket
-```
+### Example create new bucket
+
+```terraform
 terraform {
-  required_version = ">= 1.4.0"
+  required_version = ">= 1.10.5"
   required_providers {
     couchbase = {
-      version = "~> 0.0.6"
-      source  = "budisky.com/couchbase/couchbase"
+      version = "~> 1.1.3"
+      source  = "lukasbudisky/couchbase"
     }
   }
 }

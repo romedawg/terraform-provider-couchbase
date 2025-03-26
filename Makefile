@@ -6,15 +6,27 @@ TEST?=$$(go list ./... | grep -v 'vendor')
 HOSTNAME=budisky.com
 NAMESPACE=couchbase
 NAME=couchbase
-VERSION=0.0.6
+VERSION=1.1.3
 BINARY="terraform-provider-${NAME}_${VERSION}"
 OS_ARCH=linux_amd64
 CGO_ENABLED=0
 
+#########################
+# Linters configuration #
+#########################
+
+WORKSPACE="$(shell pwd)"
+GIT_BRANCH="$(shell git rev-parse --abbrev-ref HEAD)"
+LOG_LEVEL="INFO"
+
+##################
+# Build provider #
+##################
+
 default: install
 
 build:
-	go build -v -a -o ${BINARY}
+	GOOS=linux GOARCH=amd64 go build -v -a -o ${BINARY}
 
 release:
 	GOOS=darwin GOARCH=amd64 go build -v -a -o "./bin/${BINARY}_darwin_amd64_${VERSION}"
@@ -38,6 +50,10 @@ install: build
 	mkdir -p ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 	mv ${BINARY} ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 
+#################
+# Test provider #
+#################
+
 test:
 	go clean -testcache
 	go test -count=1 $(TEST) || exit 1                                                   
@@ -45,7 +61,7 @@ test:
 
 testacc:
 	go clean -testcache
-	CB_ADDRESS=couchbase CB_CLIENT_PORT=8091 CB_NODE_PORT=11210 CB_USERNAME=Administrator CB_PASSWORD=123456 TF_ACC=1 go test -count=1 $(TEST) -v $(TESTARGS) -timeout 120m 
+	CB_ADDRESS=127.0.0.1 CB_CLIENT_PORT=8091 CB_NODE_PORT=11210 CB_USERNAME=Administrator CB_PASSWORD=123456 TF_ACC=1 go test -count=1 $(TEST) -v $(TESTARGS) -timeout 120m 
 
 ########################
 # Local infrastructure #
@@ -58,19 +74,25 @@ cbnetdown:
 	docker network rm couchbase
 
 cbup:
-	docker-compose -f terraform_example/docker-compose.yml up -d --build
+	docker compose -f terraform_example/docker-compose.yml up -d --build
 
 cbinit:
-	./terraform_example/initialization.sh http://couchbase 8091
+	./terraform_example/initialization.sh http://127.0.0.1 8091
 
 cbdown:
-	docker-compose -f terraform_example/docker-compose.yml down
+	docker compose -f terraform_example/docker-compose.yml down
 
 ###########
 # Linters #
 ###########
 
-linters:
-	find . -name "*.sh" | xargs shellcheck -s bash
-	yamllint -c .yamllint .
-	golint ./...
+lint:
+	docker run --rm --platform=linux/amd64 \
+		-e LOG_LEVEL=${LOG_LEVEL} \
+		-e VALIDATE_ALL_CODEBASE=true \
+		-e RUN_LOCAL=true \
+		-e SHELL=/bin/bash \
+		-e DEFAULT_BRANCH=${GIT_BRANCH} \
+		-e VALIDATE_GO=false \
+		-v ${WORKSPACE}:/tmp/lint \
+		ghcr.io/super-linter/super-linter:latest

@@ -10,19 +10,20 @@ description: |-
 
 The `couchbase_security_user` manage users in couchbase
 
-
 ## Argument reference
 
 The following arguments are supported
+
 ### Required
 
-- **username** (String) User name
+- **username** (String) Username
 - **password** (String, Sensitive) Password
 
 ### Optional
+
 <ul>
   <li><b>id</b> (String) The ID of this resource</li>
-  <li><b>display_name</b>  (String) Full user name</li>
+  <li><b>display_name</b>  (String) Full username</li>
   <li><b>groups</b> (List of String) Assigned groups</li>
   <li><b>role</b> (Block Set) User role. Read more in couchbase documentation - <a href=https://docs.couchbase.com/server/current/rest-api/rbac.html>Role-Based Access Control (RBAC)</a></li>
     <ul>
@@ -40,18 +41,21 @@ The following arguments are supported
 </ul>
 
 ## Attributes reference
+
 The following arguments are exported
+
 <ul>
   <li><b>id</b> (String) The ID of this resource</li>
-  <li><b>username</b> (String) User name</li>
-  <li><b>display_name</b> (String) Full user name</li>
+  <li><b>username</b> (String) Username</li>
+  <li><b>display_name</b> (String) Full username</li>
   <li><b>password</b> (String) Password</li>
   <li><b>role</b> (List - Block Set) User role</li>
   <li><b>groups</b> (List of String) Assigned groups</li>
 </ul>
 
 ## Example usage
-```
+
+```terraform
 resource "random_password" "user_password" {
   length  = 10
   special = false
@@ -84,21 +88,21 @@ resource "couchbase_security_user" "user_1" {
 > **WARNING**
 > If you want import existing user with existing password configure parameter "password" to empty string. There will be no diff during terraform plan.
 >
->For Example:
->```
->"couchbase_security_user"">resource "couchbase_security_user" "user_1" {
+> For Example:
+>
+> ```terraform
+> "couchbase_security_user"">resource "couchbase_security_user" "user_1" {
 >  username = "user_1"
 >  password = ""
 >
 >  groups = [couchbase_security_group.user_group_1.id]
->}
->```
+> }
+> ```
 
-```
+```bash
 # Format:
 # terraform import couchbase_security_user.resource_name user_name
 
 # Import command:
 terraform import couchbase_security_user.user_1 user_1
 ```
-
